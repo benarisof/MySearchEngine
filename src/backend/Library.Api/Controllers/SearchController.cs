@@ -1,8 +1,6 @@
 ﻿using Library.Api.DTOs;
 using Library.Api.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
 
 namespace Library.Api.Controllers;
 
@@ -51,7 +49,7 @@ public class SearchController : ControllerBase
     {
         try
         {   
-            BookDetailDto result = await _bookService.GetBook(id);
+            BookDetailDto? result = await _bookService.GetBook(id);
             if (result == null)
                 return NotFound();
             return Ok(result);

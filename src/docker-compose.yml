@@ -48,10 +48,10 @@ services:
 
   frontend:
       build:
-        context: ./frontend/Library-UI # Ajustez le chemin vers votre dossier Angular
+        context: ./frontend/Library-UI 
       container_name: library_web
       ports:
-        - "80:80" # On expose le frontend sur le port standard HTTP
+        - "80:80" 
       depends_on:
         - backend
 

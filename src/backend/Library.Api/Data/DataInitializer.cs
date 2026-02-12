@@ -1,6 +1,6 @@
 ﻿using Library.Api.Models;
 using System.Text.RegularExpressions;
-using System.Diagnostics; // Import nécessaire pour Stopwatch
+using System.Diagnostics;
 
 namespace Library.Api.Data;
 
@@ -25,7 +25,7 @@ public static class DataInitializer
             var fileInfo = new FileInfo(file);
             totalRawSize += fileInfo.Length;
 
-            // Chronomètre par livre pour calculer la moyenne et l'écart-type
+            // Chronomètre 
             var bookWatch = Stopwatch.StartNew();
 
             var rawContent = await File.ReadAllTextAsync(file);
@@ -55,9 +55,6 @@ public static class DataInitializer
             booksToInsert.Add(book);
             bookWatch.Stop();
 
-            // Log de métrique individuelle (Utile pour tes futurs graphiques)
-            // Console.WriteLine($"[METRIC_UNIT] Book: {displayTitle}, Time: {bookWatch.ElapsedMilliseconds}ms");
-
             if (booksToInsert.Count >= 50)
             {
                 var dbWatch = Stopwatch.StartNew();
@@ -78,7 +75,7 @@ public static class DataInitializer
 
         globalWatch.Stop();
 
-        // --- SECTION MÉTRIQUES POUR LE RAPPORT ---
+        // --- SECTION MÉTRIQUES ---
         Console.WriteLine("\n--- [RESULTATS MÉTRIQUES POUR LE RAPPORT] ---");
         Console.WriteLine($"[METRIC] Temps total d'ingestion : {globalWatch.Elapsed.TotalSeconds:F2} secondes");
         Console.WriteLine($"[METRIC] Nombre total de livres : {files.Length}");

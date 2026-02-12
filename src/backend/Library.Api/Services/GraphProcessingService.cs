@@ -3,7 +3,7 @@ using Library.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Collections.Concurrent;
-using System.Diagnostics; // Ajouté pour les mesures de performance
+using System.Diagnostics; 
 using System.Text.RegularExpressions;
 
 namespace Library.Api.Services;
@@ -79,7 +79,7 @@ public class GraphProcessingService
             stepWatch.Stop();
             _logger.LogInformation($"[METRIC] Construction Index Inversé : {stepWatch.ElapsedMilliseconds}ms ({invertedIndex.Count} mots)");
 
-            // 4. Calcul Jaccard (Parallèle)
+            // 4. Calcul Jaccard 
             stepWatch.Restart();
             var (relations, graphAdj) = await Task.Run(() =>
                 ComputeRelationsParallel(books, bookSets, invertedIndex));

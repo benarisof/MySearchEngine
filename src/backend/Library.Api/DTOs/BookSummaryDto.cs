@@ -25,6 +25,6 @@ public class SearchResultDto
     // Les résultats directs de la recherche
     public List<BookSummaryDto> Matches { get; set; } = new();
 
-    // Les suggestions implicites (basées sur les voisins Jaccard)
+    // Les suggestions implicites 
     public List<BookSummaryDto> Suggestions { get; set; } = new();
 }

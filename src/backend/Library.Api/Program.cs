@@ -69,7 +69,7 @@ _ = Task.Run(async () =>
             }
         }
 
-        // ÉTAPE B : Téléchargement (Mesurer le débit réseau)
+        // ÉTAPE B : Téléchargement 
         var booksPath = Path.Combine(Directory.GetCurrentDirectory(), "data_books");
         if (!Directory.Exists(booksPath)) Directory.CreateDirectory(booksPath);
 
@@ -87,8 +87,7 @@ _ = Task.Run(async () =>
             Console.WriteLine($"[METRIC] Phase Seed/Nettoyage : {seedWatch.Elapsed.TotalSeconds:F2}s");
         }
 
-        // ÉTAPE D : Calcul du Graphe (Le plus important pour le rapport)
-        // Note : On peut commenter le "if" pour forcer le test de performance même si la DB est pleine
+        // ÉTAPE D : Calcul du Graphe 
         if (!await context.BookRelations.AnyAsync())
         {
             var graphWatch = Stopwatch.StartNew();

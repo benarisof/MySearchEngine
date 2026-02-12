@@ -16,7 +16,7 @@ public class SearchService
         _context = context;
     }
 
-    // --- RECHERCHE SIMPLE AVEC PRIORITÉ EXACTE ---
+    // --- RECHERCHE SIMPLE  ---
     public async Task<SearchResultDto> SimpleSearchAsync(string query)
     {
         var result = new SearchResultDto();
@@ -33,14 +33,12 @@ public class SearchService
             queryable = queryable.Where(b => b.IndexingTable.Contains(term));
         }
 
-        // On récupère une "shortlist" de candidats basés sur la popularité
-        // On ne fait AUCUN calcul de texte lourd (Contains sur Content) en SQL ici
         var candidates = await queryable
             .OrderByDescending(b => b.PageRankScore)
             .Take(100) // On prend les 100 plus populaires qui contiennent les mots
             .ToListAsync();
 
-        // 2. C# : Tri de précision en mémoire (très rapide sur 100 items)
+        // 2. C# : Tri de précision en mémoire 
         var sortedMatches = candidates
             .Select(b => new
             {
@@ -71,7 +69,7 @@ public class SearchService
             };
         }).ToList();
 
-        // 4. Suggestions (inchangé)
+        // 4. Suggestions
         if (result.Matches.Any())
         {
             var topBookIds = result.Matches.Take(3).Select(m => m.Id).ToList();
@@ -113,7 +111,7 @@ public class SearchService
         }
         catch (ArgumentException) { throw; }
 
-        // 1. SCAN DE LA BASE (Streaming)
+        // 1. SCAN DE LA BASE
         var booksStream = _context.Books
             .AsNoTracking()
             .Select(b => new { b.Id, b.Title, b.Content, b.PageRankScore })
@@ -193,7 +191,7 @@ public class SearchService
         return result;
     }
 
-    // --- LOGIQUE DE SNIPPET AMÉLIORÉE ---
+    // --- LOGIQUE DE SNIPPET ---
     private string GetContextualSnippet(string content, string term)
     {
         if (string.IsNullOrEmpty(content)) return "";
@@ -201,7 +199,7 @@ public class SearchService
 
         int index = content.IndexOf(term, StringComparison.OrdinalIgnoreCase);
 
-        // Si le terme exact n'est pas trouvé dans Content (cas rare de désynchro IndexingTable/Content)
+        // Si le terme exact n'est pas trouvé dans Content 
         // On se rabat sur le premier mot
         if (index == -1)
         {
