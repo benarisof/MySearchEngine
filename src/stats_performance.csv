@@ -1,0 +1,4 @@
+﻿"Type","Succes","Moyenne_ms","Max_ms"
+"Recherche Simple","100/100","1156,49","2855"
+"Regex Basique","100/100","4715,51","9966"
+"Regex Complexe","100/100","4501,11","5457"

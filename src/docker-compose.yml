@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: library_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: library_search_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 2G 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d library_search_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Library.Api/Dockerfile
+    container_name: library_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=library_search_db;Username=admin;Password=password123;Command Timeout=3600;
+    ports:
+      - "5087:8080"
+    volumes:
+      - ./backend/Library.Api/data_books:/app/data_books
+    depends_on:
+      db:
+        condition: service_healthy
+    # --- ALLOCATION DES RESSOURCES ---
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'    
+          memory: 4G       
+        reservations:
+          cpus: '2.0'
+          memory: 2G
+
+  frontend:
+      build:
+        context: ./frontend/Library-UI # Ajustez le chemin vers votre dossier Angular
+      container_name: library_web
+      ports:
+        - "80:80" # On expose le frontend sur le port standard HTTP
+      depends_on:
+        - backend
+
+volumes:
+  postgres_data:
